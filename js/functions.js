@@ -1,17 +1,22 @@
-/* 1 Функция для проверки длины строки. Она принимает строку, которую
- нужно проверить, и максимальную длину и возвращает true, если строка
- меньше или равна указанной длине, и false, если строка длиннее. */
-
-function isShorterOrEqual(phrase, maxLength) {
-  return phrase.length <= maxLength;
+/**
+ * Compare a string length with maximum length.
+ * @param {string} str - The received string.
+ * @param {number} maxLength - The maximum length.
+ * @returns {boolean} True if string length is shorter or equal to the maximum length.
+ */
+function isShorterOrEqual(str, maxLength) {
+  return str.length <= maxLength;
 }
 
-// console.log('1.1) false: ' + isShorterOrEqual('проверяемая строка', 10));
-// console.log('1.2) true: ' + isShorterOrEqual('проверяемая строка', 20));
-// console.log('1.3) true: ' + isShorterOrEqual('проверяемая строка', 18));
+isShorterOrEqual('проверяемая строка', 10);
+isShorterOrEqual('проверяемая строка', 20);
+isShorterOrEqual('проверяемая строка', 18);
 
-// 2 Функция для проверки, является ли строка палиндромом.
-
+/**
+ * Find a palindrome.
+ * @param {string} phrase - The received string.
+ * @returns {boolean} True if string is a palindrome.
+ */
 function isPalindrome(phrase) {
   const str = phrase.replaceAll(' ', '').toLowerCase();
   for (let i = 0; i < str.length / 2; i++) {
@@ -22,53 +27,55 @@ function isPalindrome(phrase) {
   return true;
 }
 
-// console.log('2.1) true: ' + isPalindrome('Лёша на полке клопа нашёл '));
-// console.log('2.2) true: ' + isPalindrome('топот'));
-// console.log('2.3) true: ' + isPalindrome('ДовОд'));
-// console.log('2.4) false: ' + isPalindrome('Кекс'));
+isPalindrome('Лёша на полке клопа нашёл ');
+isPalindrome('топот');
+isPalindrome('ДовОд');
+isPalindrome('Кекс');
 
-/* 3 Функция, которая принимает строку, извлекает содержащиеся в ней
- цифры от 0 до 9 и возвращает их в виде целого положительного числа.
- Если в строке нет ни одной цифры, функция должна вернуть NaN. */
-
+/**
+ * Extract all positive integers from the string.
+ * @param {string} str - The received string.
+ * @returns {number} All positive integers from the string or NaN.
+ */
 function getNumberFromString(str) {
   if (typeof str === 'number') {
     return Math.abs(str);
   }
-  let numbers = '';
+  let integersFromString = '';
   for (let i = 0; i < str.length; i++) {
     if (!Number.isNaN(parseInt(str.at(i), 10))) {
-      numbers += str.at(i);
+      integersFromString += str.at(i);
     }
   }
-  return parseInt(numbers, 10);
+  return parseInt(integersFromString, 10);
 }
 
-// console.log('3.1) 2023: ' + getNumberFromString('2023 год'));
-// console.log('3.2) 105: ' + getNumberFromString('1 кефир и 0.5 булки'));
-// console.log('3.3) 2022: ' + getNumberFromString('ECMAScript 2022'));
-// console.log('3.4) 7: ' + getNumberFromString('агент 007'));
-// console.log('3.5) NaN: ' + getNumberFromString('а я томат'));
-// console.log('3.6) 1: ' + getNumberFromString(-1));
+getNumberFromString('2023 год');
+getNumberFromString('1 кефир и 0.5 булки');
+getNumberFromString('ECMAScript 2022');
+getNumberFromString('агент 007');
+getNumberFromString('а я томат');
+getNumberFromString(-1);
 
-/* 4 Функция, которая принимает три параметра: исходную строку, минимальную
-  длину и строку с добавочными символами — и возвращает исходную строку,
-  дополненную указанными символами до заданной длины. Символы добавляются в
-  начало строки. Если исходная строка превышает заданную длину, она не должна
-  обрезаться. Если «добивка» слишком длинная, она обрезается с конца. */
-
-function addSymbols(str, minLength, addStr) {
+/**
+  * Pad the start of an original string with an optional string to a certain length.
+  * @param {string} str - The original string.
+  * @param {number} minLength - The minimum length.
+  * @param {string} addStr - The optional string.
+  * @returns A string that has been padded at the start with the optional string to the desired length.
+  */
+function myPadStart(str, minLength, addStr) {
   while (str.length < minLength) {
-    const newStr = str.length + addStr.length;
-    const adding = (newStr <= minLength)
+    const newLength = str.length + addStr.length;
+    const pad = (newLength <= minLength)
       ? addStr
-      : addStr.slice(0, minLength - newStr);
-    str = adding + str;
+      : addStr.slice(0, minLength - newLength);
+    str = pad + str;
   }
   return str;
 }
 
-// console.log('4.1) 0001: ' + addSymbols('1', 4, '0'));
-// console.log('4.2) werq: ' + addSymbols('q', 4, 'werty'));
-// console.log('4.3) wweq: ' + addSymbols('q', 4, 'we'));
-// console.log('4.4) qwerty: ' + addSymbols('qwerty', 4, '0'));
+myPadStart('1', 4, '0');
+myPadStart('q', 4, 'werty');
+myPadStart('q', 4, 'we');
+myPadStart('qwerty', 4, '0');
