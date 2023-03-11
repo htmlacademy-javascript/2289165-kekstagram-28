@@ -42,17 +42,17 @@ const SIMILAR_PHOTO_SPECIFICATION_COUNT = 25;
  * @param {number} min - Min value.
  * @param {number} max - Max value.
  */
-const getRandomInteger = function (min, max) {
-  const lower = Math.ceil(Math.min(min, max));
-  const upper = Math.floor(Math.max(min, max));
-  const result = Math.random() * (upper - lower + 1) + lower;
+function getRandomInteger(min, max) {
+  const result = Math.random() * (max - min + 1) + min;
   return Math.floor(result);
-};
+}
 
 /**
  *Get random array index
  */
-const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+function getRandomArrayElement(elements) {
+  return elements[getRandomInteger(0, elements.length - 1)];
+}
 
 /**
  * Keeping previous values and getting an unigue random integer in a given interval inclusive.
@@ -63,7 +63,7 @@ function createRandomUniqueIntegerFromRangeGenerator(min, max) {
   return function () {
     let currentValue = getRandomInteger(min, max);
     if (previousValues.length >= (max - min + 1)) {
-      return null;
+      return undefined;
     }
     while (previousValues.includes(currentValue)) {
       currentValue = getRandomInteger(min, max);
@@ -82,12 +82,14 @@ const generateCommentId = createRandomUniqueIntegerFromRangeGenerator(1, 1000);
  * @property {string} message - Random string/s (1 or 2) from array MESSAGES
  * @property {string} name - Author's name
  */
-const createCommentSpecification = () => ({
-  id: generateCommentId(),
-  avatar: `img/avatar-${getRandomInteger(1, MAX_AVATAR_NUMBER)}.svg`,
-  message: `${getRandomArrayElement(MESSAGES)} ${getRandomArrayElement(MESSAGES)}`,
-  name: getRandomArrayElement(AUTHOR_NAMES),
-});
+function createCommentSpecification() {
+  return {
+    id: generateCommentId(),
+    avatar: `img/avatar-${getRandomInteger(1, MAX_AVATAR_NUMBER)}.svg`,
+    message: `${getRandomArrayElement(MESSAGES)} ${getRandomArrayElement(MESSAGES)}`,
+    name: getRandomArrayElement(AUTHOR_NAMES),
+  };
+}
 
 const generatePhotoId = createRandomUniqueIntegerFromRangeGenerator(1, MAX_PHOTO_ID);
 const generateLikesCount = createRandomUniqueIntegerFromRangeGenerator(MIN_LIKES, MAX_LIKES);
@@ -101,13 +103,15 @@ const generatePhotoNumberInUrl = createRandomUniqueIntegerFromRangeGenerator(1, 
  * @property {number} likes - Random number of likes from 15 to 200.
  * @property {object} comments - Array of objects with information about comment.
  */
-const createPhotoSpecification = () => ({
-  id: generatePhotoId(),
-  url: `photos/${generatePhotoNumberInUrl()}.jpg`,
-  description: getRandomArrayElement(DESCRIPTION_PHOTO),
-  likes: generateLikesCount(),
-  comments: Array.from({ length: COMMENT_COUNT_UNDER_PHOTO }, createCommentSpecification),
-});
+function createPhotoSpecification() {
+  return {
+    id: generatePhotoId(),
+    url: `photos/${generatePhotoNumberInUrl()}.jpg`,
+    description: getRandomArrayElement(DESCRIPTION_PHOTO),
+    likes: generateLikesCount(),
+    comments: Array.from({ length: COMMENT_COUNT_UNDER_PHOTO }, createCommentSpecification),
+  };
+}
 
 const similarPhotoSpecifications = Array.from({ length: SIMILAR_PHOTO_SPECIFICATION_COUNT }, createPhotoSpecification);
 
