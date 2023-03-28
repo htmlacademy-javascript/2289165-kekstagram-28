@@ -1,9 +1,5 @@
-import { SIMILAR_PHOTO_SPECIFICATION_COUNT } from './data.js';
-import {similarPhotoSpecifications } from './create-objects.js';
-
 const container = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-
 
 function createMiniature({ url, likes, comments }) {
   const newElement = pictureTemplate.cloneNode(true);
@@ -17,11 +13,11 @@ function createMiniature({ url, likes, comments }) {
 /**
  * Create miniphotos on the main page
  */
-function createModels() {
+function createModels(data) {
   const fragment = document.createDocumentFragment();
-  for (let i = 0; i < SIMILAR_PHOTO_SPECIFICATION_COUNT; i++) {
-    fragment.appendChild(createMiniature(similarPhotoSpecifications[i]));
-  }
+  data.forEach((value)=>{
+    fragment.appendChild(createMiniature(value));
+  });
   container.appendChild(fragment);
 }
 
