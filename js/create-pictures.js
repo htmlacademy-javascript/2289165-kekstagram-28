@@ -3,26 +3,27 @@ import {createPhotoSpecification} from './create-objects.js';
 
 const container = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const pictures = [];
+const fragment = document.createDocumentFragment();
 
-function createMiniature(picture) {
+function createMiniature({url, likes, comments}) {
   const newElement = pictureTemplate.cloneNode(true);
-  newElement.querySelector('.picture__img').src = picture.url;
-  //newElement.querySelector('.picture__img').src = `photos/${generatePhotoNumberInUrl()}.jpg`;
-  newElement.querySelector('.picture__likes').textContent = picture.likes ;
-  newElement.querySelector('.picture__comments').textContent = picture.comments.length;
+  newElement.querySelector('.picture__img').src = url;
+  newElement.querySelector('.picture__likes').textContent = likes ;
+  newElement.querySelector('.picture__comments').textContent = comments.length;
 
   return newElement;
 }
+
+for (let i = 0; i < SIMILAR_PHOTO_SPECIFICATION_COUNT; i++) {
+  pictures[i] = createMiniature(createPhotoSpecification());
+  fragment.appendChild(pictures[i]);
+}
+
 /**
  * Create miniphotos on the main page
  */
 function createModels() {
-  const fragment = document.createDocumentFragment();
-  for (let i = 1; i <= SIMILAR_PHOTO_SPECIFICATION_COUNT; i++) {
-    const picture = createPhotoSpecification();
-    const newElement = createMiniature(picture);
-    fragment.appendChild(newElement);
-  }
   container.appendChild(fragment);
 }
 

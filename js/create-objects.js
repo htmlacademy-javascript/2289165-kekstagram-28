@@ -1,6 +1,6 @@
 import {getRandomInteger, getRandomArrayElement, createRandomUniqueIntegerFromRangeGenerator} from './rand.js';
 import {DESCRIPTIONS_PHOTO, MESSAGES, AUTHOR_NAMES, MAX_AVATAR_NUMBER, MAX_PHOTO_ID, MIN_LIKES, MAX_LIKES,
-  MAX_PHOTO_NUMBER_IN_URL, COMMENT_COUNT_UNDER_PHOTO, SIMILAR_PHOTO_SPECIFICATION_COUNT} from './data.js';
+  MAX_PHOTO_NUMBER_IN_URL, COMMENT_COUNT_UNDER_PHOTO} from './data.js';
 
 const generateCommentId = createRandomUniqueIntegerFromRangeGenerator(1, 1000);
 
