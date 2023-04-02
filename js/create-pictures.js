@@ -7,7 +7,6 @@ function createMiniature({ id, url, likes, comments, description }) {
   newElement.querySelector('.picture__likes').textContent = likes;
   newElement.querySelector('.picture__comments').textContent = comments.length;
   newElement.querySelector('.picture__img').alt = description;
-  newElement.classList.add('mini-picture');
   newElement.id = id;
   return newElement;
 }
@@ -23,4 +22,4 @@ function createModels(data) {
   container.appendChild(fragment);
 }
 
-export { createModels, createMiniature };
+export { createModels, createMiniature, container };
