@@ -12,12 +12,14 @@ const commentsLoader = document.querySelector('.comments-loader');
 const closeButton = fullSize.querySelector('.big-picture__cancel');
 
 container.addEventListener('click', onContainerClick);
+closeButton.addEventListener('click', onCloseButtonClick);
 
-function onMiniatureClick({ url, likes, comments, description }) {
+function enlargeMiniature({ url, likes, comments, description }) {
   document.querySelector('body').classList.add('modal-open');
   fullSize.classList.remove('hidden');
-  closeButton.addEventListener('click', onCloseButtonClick);
+
   document.addEventListener('keydown', onFullSizeEscKeydown);
+
   fullSizePicture.src = url;
   likesCount.textContent = likes;
   commentsCount.textContent = comments.length;
@@ -25,19 +27,18 @@ function onMiniatureClick({ url, likes, comments, description }) {
     commentsList.querySelector(`li:nth-child(${i + 1}) p`).textContent = comments[i].message;
   }
   textAboutPicture.textContent = description;
+
   commentsCountBlock.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 }
 
 function getDataForPicture(id) {
-  const spec = similarPhotoSpecifications
-    .find((x) => id == x.id);
-  return spec;
+  return similarPhotoSpecifications.find((photoSpecification) => Number(id) === photoSpecification.id);
 }
 
 function onContainerClick(evt) {
   if (evt.target.className === 'picture__img') {
-    onMiniatureClick(getDataForPicture(evt.target.closest('a').id));
+    enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
   }
 }
 
