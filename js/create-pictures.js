@@ -1,12 +1,13 @@
 const container = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-function createMiniature({ url, likes, comments }) {
+function createMiniature({ id, url, likes, comments, description }) {
   const newElement = pictureTemplate.cloneNode(true);
   newElement.querySelector('.picture__img').src = url;
   newElement.querySelector('.picture__likes').textContent = likes;
   newElement.querySelector('.picture__comments').textContent = comments.length;
-
+  newElement.querySelector('.picture__img').alt = description;
+  newElement.id = id;
   return newElement;
 }
 
@@ -15,10 +16,10 @@ function createMiniature({ url, likes, comments }) {
  */
 function createModels(data) {
   const fragment = document.createDocumentFragment();
-  data.forEach((value)=>{
+  data.forEach((value) => {
     fragment.appendChild(createMiniature(value));
   });
   container.appendChild(fragment);
 }
 
-export { createModels };
+export { createModels, createMiniature, container };
