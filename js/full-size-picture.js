@@ -9,8 +9,8 @@ const likesCount = fullSize.querySelector('.likes-count');
 const commentsCount = fullSize.querySelector('.comments-count');
 const commentsList = fullSize.querySelector('.social__comments');
 const textAboutPicture = fullSize.querySelector('.social__caption');
-const commentsCountBlock = fullSize.querySelector('.social__comment-count'); //!
-const commentsLoader = fullSize.querySelector('.comments-loader');//!
+const commentsCountBlock = fullSize.querySelector('.social__comment-count');
+const commentsLoader = fullSize.querySelector('.comments-loader');
 const closeButton = fullSize.querySelector('.big-picture__cancel');
 const oneCommentType = commentsList.querySelector(`li:nth-child(${1})`).cloneNode(true);
 const loadMoreCommentsButton = fullSize.querySelector('.comments-loader');
@@ -22,7 +22,6 @@ loadMoreCommentsButton.addEventListener('click', () => onLoadMoreCommentsButtonC
 
 function onContainerClick(evt) {
   enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
-
 }
 
 function onFullSizeEscKeydown(evt) {
@@ -79,11 +78,11 @@ function createOneComment(comments, index) {
 
 function loadMoreComments(comments) {
   const fragment = document.createDocumentFragment();
-  for (let i = commentsList.children.length /*commentsList.childElementCount*/;
-    i < Math.min(comments.length, commentsList.children.length + MAXIMUM_COMMENTS_NUMBER);
+  const countOfCommentsInList = commentsList.children.length;
+  for (let i = countOfCommentsInList;
+    i < Math.min(comments.length, countOfCommentsInList + MAXIMUM_COMMENTS_NUMBER);
     i++) {
     fragment.appendChild(createOneComment(comments, i));
-
   }
   return fragment;
 }
