@@ -84,6 +84,9 @@ function loadMoreComments(comments) {
     i++) {
     fragment.appendChild(createOneComment(comments, i));
   }
+  if (countOfCommentsInList === comments.length) {
+    loadMoreCommentsButton.classList.add('hidden');
+  }
   return fragment;
 }
 
