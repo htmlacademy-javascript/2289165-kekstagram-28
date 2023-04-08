@@ -41,48 +41,45 @@ function closeFormDecoration() {
   formDecoration.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onFormDecorationEscKeydown);
-  uploadFile.value = '';
+  uploadFile.value = undefined;
 }
 
 function validateComment(text) {
   if (text.length >= 140) {
-    submitButton.disabled = true;
     return false;
   }
-  submitButton.disabled = false;
   return true;
 }
 
-function validateHashtag(hashtagText) {
-  const regForHashtag = /^#[a-zа-яё0-9]{1,19}$/i;
-  const hashtags = hashtagText.split(' ');
-  if (hashtagText === '') {
-    submitButton.disabled = false;
+function validateHashtag(text) {
+  if (text === '') {
     return true;
   }
+  const regForHashtag = /^#[a-zа-яё0-9]{1,19}$/i;
+  const hashtags = text.split(' ');
   if (hashtags.length !== new Set(hashtags).size) {
-    submitButton.disabled = true;
     return false;
   }
-  let count = 0;
   for (const hashtag of hashtags) {
     const isValue = regForHashtag.test(hashtag);
     if (!isValue) {
-      submitButton.disabled = true;
-      return false;
-    }
-    if (count < 5 && hashtag.includes('#')) {
-      count++;
-    } else {
-      submitButton.disabled = true;
       return false;
     }
   }
-  submitButton.disabled = false;
+  if (hashtags.length >= 6) {
+    return false;
+  }
+
   return true;
 }
 
-formDecoration.addEventListener('submit', (evt) => {
+formDecoration.addEventListener('input', (evt) => {
   evt.preventDefault();
-  pristine.validate();
+  const isValide = pristine.validate();
+  if (isValide) {
+    submitButton.disabled = false;
+  } else {
+    submitButton.disabled = true;
+  }
 });
+
