@@ -1,4 +1,6 @@
 import { isEscapeKey } from './utils.js';
+import { MAXIMUM_HASHTAG_NUMBER, MAXIMUM_COMMENT_LENGTH } from './data.js';
+import { resetScale, resetEffects } from './edit-picture.js';
 
 const formDecoration = document.querySelector('.img-upload__overlay');
 const uploadFile = document.querySelector('.img-upload__input');
@@ -41,11 +43,13 @@ function closeFormDecoration() {
   formDecoration.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onFormDecorationEscKeydown);
-  uploadFile.value = undefined;
+  resetScale();
+  resetEffects();
+  uploadFile.value = '';
 }
 
 function validateComment(text) {
-  if (text.length >= 140) {
+  if (text.length > MAXIMUM_COMMENT_LENGTH) {
     return false;
   }
   return true;
@@ -66,7 +70,7 @@ function validateHashtag(text) {
       return false;
     }
   }
-  if (hashtags.length >= 6) {
+  if (hashtags.length > MAXIMUM_HASHTAG_NUMBER) {
     return false;
   }
 
@@ -82,4 +86,3 @@ formDecoration.addEventListener('input', (evt) => {
     submitButton.disabled = true;
   }
 });
-
