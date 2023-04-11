@@ -5,5 +5,3 @@ import { showAlert } from './utils.js';
 import { createLoader } from './load.js';
 
 createLoader(createModels, showAlert);
-
-
