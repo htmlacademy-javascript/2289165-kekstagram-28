@@ -1,4 +1,4 @@
-import { isEscapeKey} from './utils.js';
+import { isEscapeKey } from './utils.js';
 import { MAXIMUM_HASHTAG_NUMBER, MAXIMUM_COMMENT_LENGTH } from './data.js';
 import { resetScale, resetEffects } from './edit-picture.js';
 import { sendData } from './load.js';
@@ -10,12 +10,14 @@ const commentField = formDecoration.querySelector('.text__description');
 const hashtagField = formDecoration.querySelector('.text__hashtags');
 const submitButton = formDecoration.querySelector('.img-upload__submit');
 const formToSend = document.querySelector('.img-upload__form');
-const successMessage = document.querySelector('#success').content.cloneNode(true);
-const successField = successMessage.querySelector('.success');
-const successButton = successMessage.querySelector('.success__button');
-const errorMessage = document.querySelector('#error').content.cloneNode(true);
-const errorField = errorMessage.querySelector('.error');
-const errorButton = errorMessage.querySelector('.error__button');
+const successMessageTemplate = document.querySelector('#success');
+const copySuccessMessage = successMessageTemplate.content.cloneNode(true);
+const successField = copySuccessMessage.querySelector('.success');
+const successButton = copySuccessMessage.querySelector('.success__button');
+const errorMessageTemplate = document.querySelector('#error');
+const copyErrorMessage = errorMessageTemplate.content.cloneNode(true);
+const errorField = copyErrorMessage.querySelector('.error');
+const errorButton = copyErrorMessage.querySelector('.error__button');
 
 const pristine = new Pristine(formDecoration, {
   classTo: 'img-upload__field-wrapper',
@@ -101,10 +103,7 @@ const setUserFormSubmit = (onSuccess, onError) => {
     evt.preventDefault();
     const isValide = pristine.validate();
     if (isValide) {
-      sendData(
-        () => onSuccess(),
-        () => onError(),
-        new FormData(evt.target)
+      sendData(onSuccess, onError, new FormData(evt.target)
       );
     }
   });
@@ -113,14 +112,14 @@ const setUserFormSubmit = (onSuccess, onError) => {
 setUserFormSubmit(getSuccessMessage, getErrorMessage);
 
 function getErrorMessage() {
-  document.body.append(errorMessage);
+  document.body.append(errorField);
   document.addEventListener('keydown', onErrorFieldClickEscKeydown);
   errorButton.addEventListener('click', onErrorFieldClick);
   errorField.addEventListener('click', onErrorFieldClick);
 }
 
 function getSuccessMessage() {
-  document.body.append(successMessage);
+  document.body.append(successField);
   successButton.addEventListener('click', onSuccessFieldClick);
   successField.addEventListener('click', onSuccessFieldClick);
   document.addEventListener('keydown', onSuccessFieldClickEscKeydown);
