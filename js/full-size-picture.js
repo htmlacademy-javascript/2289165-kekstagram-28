@@ -1,7 +1,7 @@
 import { container } from './create-pictures.js';
 import { MAXIMUM_COMMENTS_NUMBER } from './data.js';
 import { isEscapeKey} from './utils.js';
-import { similarPhotoSpecifications } from './main.js';
+import { similarPhotoSpecifications } from './create-pictures.js';
 
 
 const fullSize = document.querySelector('.big-picture');
@@ -19,8 +19,6 @@ const loadMoreCommentsButton = fullSize.querySelector('.comments-loader');
 container.addEventListener('click', onContainerClick);
 closeButton.addEventListener('click', onCloseButtonClick);
 loadMoreCommentsButton.addEventListener('click', () => onLoadMoreCommentsButtonClick(getDataForPicture(loadMoreCommentsButton.id).comments));
-
-
 
 function onContainerClick(evt) {
   enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
@@ -70,8 +68,6 @@ function enlargeMiniature({ id, url, likes, comments, description }) {
   commentsCountBlock.innerHTML = `${commentsList.childElementCount} из ${comments.length} комментариев`;
   commentsCountBlock.classList.remove('hidden');
 }
-
-
 
 function getDataForPicture(id) {
   return similarPhotoSpecifications.find((photoSpecification) => Number(id) === photoSpecification.id);
