@@ -3,36 +3,38 @@ import { MAXIMUM_HASHTAG_NUMBER, MAXIMUM_COMMENT_LENGTH } from './data.js';
 import { resetScale, resetEffects } from './edit-picture.js';
 import { sendData } from './load.js';
 
-const formDecoration = document.querySelector('.img-upload__overlay');
-const uploadFile = document.querySelector('.img-upload__input');
-const uploadCloseButton = formDecoration.querySelector('.img-upload__cancel');
-const commentField = formDecoration.querySelector('.text__description');
-const hashtagField = formDecoration.querySelector('.text__hashtags');
-const submitButton = formDecoration.querySelector('.img-upload__submit');
-const formToSend = document.querySelector('.img-upload__form');
+const fileInput = document.querySelector('.img-upload__overlay');
+const pictureInput = document.querySelector('.img-upload__input');
+const uploadCloseButton = fileInput.querySelector('.img-upload__cancel');
+const commentInput = fileInput.querySelector('.text__description');
+const hashtagInput = fileInput.querySelector('.text__hashtags');
+const submitButton = fileInput.querySelector('.img-upload__submit');
+const form = document.querySelector('.img-upload__form');
+
 const successMessageTemplate = document.querySelector('#success');
 const copySuccessMessage = successMessageTemplate.content.cloneNode(true);
 const successField = copySuccessMessage.querySelector('.success');
 const successButton = copySuccessMessage.querySelector('.success__button');
+
 const errorMessageTemplate = document.querySelector('#error');
 const copyErrorMessage = errorMessageTemplate.content.cloneNode(true);
 const errorField = copyErrorMessage.querySelector('.error');
 const errorButton = copyErrorMessage.querySelector('.error__button');
 
-const pristine = new Pristine(formDecoration, {
+const pristine = new Pristine(fileInput, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper__error-text',
 });
 
-uploadFile.addEventListener('change', onUploadFileChange);
+pictureInput.addEventListener('change', onUploadFileChange);
 uploadCloseButton.addEventListener('click', onUpLoadCloseButton);
 
-pristine.addValidator(commentField, validateComment);
-pristine.addValidator(hashtagField, validateHashtag, 'Хеш-тег написан неверно');
+pristine.addValidator(commentInput, validateComment);
+pristine.addValidator(hashtagInput, validateHashtag, 'Хеш-тег написан неверно');
 
 function onUploadFileChange() {
-  formDecoration.classList.remove('hidden');
+  fileInput.classList.remove('hidden');
   document.addEventListener('keydown', onFormDecorationEscKeydown);
   document.querySelector('body').classList.add('modal-open');
 }
@@ -42,7 +44,7 @@ function onUpLoadCloseButton() {
 }
 
 function onFormDecorationEscKeydown(evt) {
-  const isTextFieldOnFocus = document.activeElement === commentField || document.activeElement === hashtagField;
+  const isTextFieldOnFocus = document.activeElement === commentInput || document.activeElement === hashtagInput;
   if (isEscapeKey(evt) && !isTextFieldOnFocus) {
     evt.preventDefault();
     closeFormDecoration();
@@ -50,14 +52,14 @@ function onFormDecorationEscKeydown(evt) {
 }
 
 function closeFormDecoration() {
-  formDecoration.classList.add('hidden');
+  fileInput.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onFormDecorationEscKeydown);
   resetScale();
   resetEffects();
-  uploadFile.value = '';
-  hashtagField.value = '';
-  commentField.value = '';
+  pictureInput.value = '';
+  hashtagInput.value = '';
+  commentInput.value = '';
 }
 
 function validateComment(text) {
@@ -89,20 +91,19 @@ function validateHashtag(text) {
   return true;
 }
 
-formDecoration.addEventListener('input', () => {
-  const isValide = pristine.validate();
-  if (isValide) {
+fileInput.addEventListener('input', () => {
+  if (pristine.validate()) {
     submitButton.disabled = false;
-  } else {
-    submitButton.disabled = true;
+    return;
   }
+  submitButton.disabled = true;
+
 });
 
 const setUserFormSubmit = (onSuccess, onError) => {
-  formToSend.addEventListener('submit', (evt) => {
+  form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    const isValide = pristine.validate();
-    if (isValide) {
+    if (pristine.validate()) {
       sendData(onSuccess, onError, new FormData(evt.target)
       );
     }
@@ -113,7 +114,7 @@ setUserFormSubmit(getSuccessMessage, getErrorMessage);
 
 function getErrorMessage() {
   document.body.append(errorField);
-  document.addEventListener('keydown', onErrorFieldClickEscKeydown);
+  document.addEventListener('keydown', onErrorFieldClick);
   errorButton.addEventListener('click', onErrorFieldClick);
   errorField.addEventListener('click', onErrorFieldClick);
 }
@@ -122,36 +123,27 @@ function getSuccessMessage() {
   document.body.append(successField);
   successButton.addEventListener('click', onSuccessFieldClick);
   successField.addEventListener('click', onSuccessFieldClick);
-  document.addEventListener('keydown', onSuccessFieldClickEscKeydown);
+  document.addEventListener('keydown', onSuccessFieldClick);
 }
 
-function onSuccessFieldClick() {
-  document.body.removeChild(successField);
-  closeFormDecoration();
-  successButton.removeEventListener('click', onSuccessFieldClick);
-  successField.removeEventListener('click', onSuccessFieldClick);
-  document.removeEventListener('keydown', onSuccessFieldClickEscKeydown);
-}
-
-
-function onErrorFieldClick() {
-  document.body.removeChild(errorField);
-  document.removeEventListener('keydown', onErrorFieldClickEscKeydown);
-  errorButton.removeEventListener('click', onErrorFieldClick);
-  errorField.removeEventListener('click', onErrorFieldClick);
-}
-
-function onSuccessFieldClickEscKeydown(evt) {
-  if (isEscapeKey(evt)) {
+function onSuccessFieldClick(evt) {
+  if (evt.target.className !== 'success__inner' || isEscapeKey(evt)) {
     evt.preventDefault();
-    onSuccessFieldClick();
+    document.body.removeChild(successField);
+    closeFormDecoration();
+    successButton.removeEventListener('click', onSuccessFieldClick);
+    successField.removeEventListener('click', onSuccessFieldClick);
+    document.removeEventListener('keydown', onSuccessFieldClick);
   }
 }
 
-function onErrorFieldClickEscKeydown(evt) {
-  if (isEscapeKey(evt)) {
+
+function onErrorFieldClick(evt) {
+  if (evt.target.className !== 'error__inner' || isEscapeKey(evt)) {
     evt.preventDefault();
-    onErrorFieldClick();
+    document.body.removeChild(errorField);
+    document.removeEventListener('keydown', onErrorFieldClick);
+    errorButton.removeEventListener('click', onErrorFieldClick);
+    errorField.removeEventListener('click', onErrorFieldClick);
   }
 }
-

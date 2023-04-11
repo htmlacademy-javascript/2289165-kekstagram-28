@@ -21,7 +21,9 @@ closeButton.addEventListener('click', onCloseButtonClick);
 loadMoreCommentsButton.addEventListener('click', () => onLoadMoreCommentsButtonClick(getDataForPicture(loadMoreCommentsButton.id).comments));
 
 function onContainerClick(evt) {
-  enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
+  if (evt.target.className === 'picture__img') {
+    enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
+  }
 }
 
 function onFullSizeEscKeydown(evt) {

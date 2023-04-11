@@ -22,6 +22,7 @@ function createModels(data) {
   });
   container.appendChild(fragment);
   similarPhotoSpecifications = data;
+  document.querySelector('.img-filters').classList.remove('img-filters--inactive');
 }
 
 export { createModels, createMiniature, container, similarPhotoSpecifications };

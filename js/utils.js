@@ -1,4 +1,5 @@
-const ALERT_SHOW_TIME = 5000;
+import {ALERT_SHOW_TIME} from './data.js';
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const showAlert = (message) => {
