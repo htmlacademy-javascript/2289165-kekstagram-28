@@ -1,5 +1,6 @@
 const container = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+let similarPhotoSpecifications = [];
 
 function createMiniature({ id, url, likes, comments, description }) {
   const newElement = pictureTemplate.cloneNode(true);
@@ -20,6 +21,8 @@ function createModels(data) {
     fragment.appendChild(createMiniature(value));
   });
   container.appendChild(fragment);
+  similarPhotoSpecifications = data;
+  document.querySelector('.img-filters').classList.remove('img-filters--inactive');
 }
 
-export { createModels, createMiniature, container };
+export { createModels, createMiniature, container, similarPhotoSpecifications };

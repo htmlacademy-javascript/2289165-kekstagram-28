@@ -1,7 +1,8 @@
-import { similarPhotoSpecifications } from './create-objects.js';
 import { container } from './create-pictures.js';
 import { MAXIMUM_COMMENTS_NUMBER } from './data.js';
-import { isEscapeKey } from './utils.js';
+import { isEscapeKey} from './utils.js';
+import { similarPhotoSpecifications } from './create-pictures.js';
+
 
 const fullSize = document.querySelector('.big-picture');
 const fullSizePicture = fullSize.querySelector('.big-picture__img img');
@@ -10,7 +11,6 @@ const commentsCount = fullSize.querySelector('.comments-count');
 const commentsList = fullSize.querySelector('.social__comments');
 const textAboutPicture = fullSize.querySelector('.social__caption');
 const commentsCountBlock = fullSize.querySelector('.social__comment-count');
-const commentsLoader = fullSize.querySelector('.comments-loader');
 const closeButton = fullSize.querySelector('.big-picture__cancel');
 const oneCommentType = commentsList.querySelector(`li:nth-child(${1})`).cloneNode(true);
 const loadMoreCommentsButton = fullSize.querySelector('.comments-loader');
@@ -21,7 +21,9 @@ closeButton.addEventListener('click', onCloseButtonClick);
 loadMoreCommentsButton.addEventListener('click', () => onLoadMoreCommentsButtonClick(getDataForPicture(loadMoreCommentsButton.id).comments));
 
 function onContainerClick(evt) {
-  enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
+  if (evt.target.className === 'picture__img') {
+    enlargeMiniature(getDataForPicture(evt.target.closest('a').id));
+  }
 }
 
 function onFullSizeEscKeydown(evt) {
@@ -37,6 +39,9 @@ function onCloseButtonClick() {
 
 function onLoadMoreCommentsButtonClick(comments) {
   commentsList.appendChild(loadMoreComments(comments));
+  if (commentsList.children.length === comments.length) {
+    loadMoreCommentsButton.classList.add('hidden');
+  }
   commentsCountBlock.innerHTML = `${commentsList.childElementCount} из ${comments.length} комментариев`;
 }
 
@@ -53,19 +58,21 @@ function enlargeMiniature({ id, url, likes, comments, description }) {
   loadMoreCommentsButton.id = fullSizePicture.id;
 
   commentsList.replaceChildren();
-  for (let i = 0; i < MAXIMUM_COMMENTS_NUMBER; i++) {
+  for (let i = 0; i < Math.min(comments.length, MAXIMUM_COMMENTS_NUMBER); i++) {
     commentsList.appendChild(createOneComment(getDataForPicture(fullSizePicture.id).comments, i));
   }
   textAboutPicture.textContent = description;
-
+  if (commentsList.children.length === comments.length) {
+    loadMoreCommentsButton.classList.add('hidden');
+  } else {
+    loadMoreCommentsButton.classList.remove('hidden');
+  }
   commentsCountBlock.innerHTML = `${commentsList.childElementCount} из ${comments.length} комментариев`;
   commentsCountBlock.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
 }
 
 function getDataForPicture(id) {
-  return similarPhotoSpecifications
-    .find((photoSpecification) => Number(id) === photoSpecification.id);
+  return similarPhotoSpecifications.find((photoSpecification) => Number(id) === photoSpecification.id);
 }
 
 function createOneComment(comments, index) {
@@ -83,9 +90,6 @@ function loadMoreComments(comments) {
     i < Math.min(comments.length, countOfCommentsInList + MAXIMUM_COMMENTS_NUMBER);
     i++) {
     fragment.appendChild(createOneComment(comments, i));
-  }
-  if (countOfCommentsInList === comments.length) {
-    loadMoreCommentsButton.classList.add('hidden');
   }
   return fragment;
 }
