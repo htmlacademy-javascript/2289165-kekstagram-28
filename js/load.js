@@ -1,18 +1,27 @@
-const createLoader = (onSuccess, onError) => fetch(
-  'https://28.javascript.pages.academy/kekstagram/data')
-  .then((response) => {
-    if (response.ok) {
-      return response.json();
+const getSingleton = () => {
+  let data;
+
+  return (onSuccess, onError) => {
+    if (data) {
+      return onSuccess(data);
     }
 
-    throw new Error(`${response.status} ${response.statusText}`);
-  })
-  .then((data) => {
-    onSuccess(data);
-  })
-  .catch((err) => {
-    onError(err);
-  });
+    fetch('https://28.javascript.pages.academy/kekstagram/data')
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Не получилось загрузить данные с сервера');
+      })
+      .then((response) => {
+        data = response;
+        onSuccess(response);
+      })
+      .catch((err) => onError(err));
+  };
+};
+
+const createLoader = getSingleton();
 
 const sendData = (onSuccess, onError, body) =>
   fetch(
@@ -29,8 +38,6 @@ const sendData = (onSuccess, onError, body) =>
       }
       onError();
     })
-    .catch(() => {
-      onError();
-    });
+    .catch(() => onError());
 
 export { sendData, createLoader };

@@ -23,4 +23,16 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export {isEscapeKey, showAlert};
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+function getPhotoSpecificationsFromServer(data) {
+  return data;
+}
+
+export {isEscapeKey, showAlert, debounce, getPhotoSpecificationsFromServer};
