@@ -108,4 +108,4 @@ function resetEffects() {
   updateSlider();
 }
 
-export { resetScale, resetEffects };
+export { resetScale, resetEffects, imagePreview };
