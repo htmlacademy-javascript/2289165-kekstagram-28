@@ -112,7 +112,6 @@ const setUserFormSubmit = (onSuccess, onError) => {
 
 setUserFormSubmit(getSuccessMessage, getErrorMessage);
 
-
 function getErrorMessage() {
   document.body.append(errorField);
   document.addEventListener('keydown', onErrorFieldKeydownEsc);

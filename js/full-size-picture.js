@@ -71,7 +71,7 @@ function enlargeMiniature({ id, url, likes, comments, description }) {
   commentsCountBlock.textContent = `${commentsList.childElementCount} из ${comments.length} комментариев`;
   commentsCountBlock.classList.remove('hidden');
 }
-// createLoader
+
 function getDataForPicture(id) {
   return createLoader(getPhotoSpecificationsFromServer).find((photoSpecification) => Number(id) === photoSpecification.id);
 }

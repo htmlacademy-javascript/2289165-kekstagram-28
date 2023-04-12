@@ -8,7 +8,6 @@ const defaultFilterButton = filterForm.querySelector('#filter-default');
 const randomTenFilterButton = filterForm.querySelector('#filter-random');
 const discussedFilterButton = filterForm.querySelector('#filter-discussed');
 
-
 defaultFilterButton.addEventListener('click', onDefaultFilterButtonClick);
 randomTenFilterButton.addEventListener('click', onRandomTenFilterButtonClick);
 discussedFilterButton.addEventListener('click', onDiscussedFilterButtonClick);
@@ -28,28 +27,27 @@ function sortAscending(elementOne, elementTwo) {
   return 0;
 }
 
-const debouncedFilteredPictures = debounce(createfilteredModels);
+const debouncedFilteredPictures = debounce(createFilteredModels);
 
 function makeOneButtonActive(buttonName) {
   filterForm.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
   buttonName.classList.add('img-filters__button--active');
 }
 
-function emptyContainer() {
+function clearContainer() {
   container.querySelectorAll('.picture').forEach((element) => element.remove());
 }
 
 function onDefaultFilterButtonClick() {
   makeOneButtonActive(defaultFilterButton);
-  emptyContainer();
+  clearContainer();
   debouncedFilteredPictures(createLoader(getPhotoSpecificationsFromServer));
-
 }
 
 function onRandomTenFilterButtonClick() {
   makeOneButtonActive(randomTenFilterButton);
   const dataForPictures = createLoader(getPhotoSpecificationsFromServer).slice(0);
-  emptyContainer();
+  clearContainer();
   debouncedFilteredPictures(dataForPictures.sort(sortRand).slice(0, PICTURES_RAND_COUNT));
 }
 
@@ -57,11 +55,11 @@ function onDiscussedFilterButtonClick() {
   makeOneButtonActive(discussedFilterButton);
   const dataForPictures = createLoader(getPhotoSpecificationsFromServer).slice(0);
   const picturesAfterFilter = dataForPictures.sort(sortAscending);
-  emptyContainer();
+  clearContainer();
   debouncedFilteredPictures(picturesAfterFilter);
 }
 
-function createfilteredModels(sortedData) {
+function createFilteredModels(sortedData) {
   container.querySelectorAll('.picture').forEach((element) => element.remove());
   const fragment = document.createDocumentFragment();
   sortedData.forEach((value) => fragment.appendChild(createMiniature(value)));

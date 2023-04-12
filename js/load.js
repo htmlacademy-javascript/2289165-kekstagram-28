@@ -7,15 +7,15 @@ const getSingleton = () => {
     }
 
     fetch('https://28.javascript.pages.academy/kekstagram/data')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
         throw new Error('Не получилось загрузить данные с сервера');
       })
-      .then((res2) => {
-        data = res2;
-        onSuccess(res2);
+      .then((response) => {
+        data = response;
+        onSuccess(response);
       })
       .catch((err) => onError(err));
   };
@@ -31,8 +31,8 @@ const sendData = (onSuccess, onError, body) =>
       body,
     }
   )
-    .then((res) => {
-      if (res.ok) {
+    .then((response) => {
+      if (response.ok) {
         onSuccess();
         return;
       }
