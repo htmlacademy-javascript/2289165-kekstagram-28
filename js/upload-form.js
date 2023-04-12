@@ -1,6 +1,6 @@
 import { isEscapeKey } from './utils.js';
-import { MAXIMUM_HASHTAG_NUMBER, MAXIMUM_COMMENT_LENGTH } from './data.js';
-import { resetScale, resetEffects } from './edit-picture.js';
+import { MAXIMUM_HASHTAG_NUMBER, MAXIMUM_COMMENT_LENGTH, FILE_TYPES } from './data.js';
+import { resetScale, resetEffects, imagePreview } from './edit-picture.js';
 import { sendData } from './load.js';
 
 const fileInput = document.querySelector('.img-upload__overlay');
@@ -62,6 +62,15 @@ function closeFormDecoration() {
   hashtagInput.value = '';
   commentInput.value = '';
 }
+
+pictureInput.addEventListener('change', () => {
+  const file = pictureInput.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    imagePreview.src = URL.createObjectURL(file);
+  }
+});
 
 function validateComment(text) {
   if (text.length > MAXIMUM_COMMENT_LENGTH) {
@@ -137,7 +146,6 @@ function onSuccessFieldClick(evt) {
     document.removeEventListener('keydown', onSuccessFieldKeydownEsc);
   }
 }
-
 
 function onErrorFieldClick(evt) {
   if (evt.target.className !== 'error__inner'
