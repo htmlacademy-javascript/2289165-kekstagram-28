@@ -11,9 +11,6 @@ function createMiniature({ id, url, likes = 0, comments = 0, description }) {
   return newElement;
 }
 
-/**
- * Create miniphotos on the main page
- */
 function createModels(data) {
   const fragment = document.createDocumentFragment();
   data.forEach((value) => fragment.appendChild(createMiniature(value)));
