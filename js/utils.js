@@ -31,4 +31,8 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export {isEscapeKey, showAlert, debounce};
+function getPhotoSpecificationsFromServer(data) {
+  return data;
+}
+
+export {isEscapeKey, showAlert, debounce, getPhotoSpecificationsFromServer};

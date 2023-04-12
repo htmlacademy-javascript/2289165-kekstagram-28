@@ -42,7 +42,7 @@ const EFFECTS = [
   {
     name: 'heat',
     style: 'brightness',
-    min: 0,
+    min: 1,
     max: 3,
     step: 0.1,
     unit: '',

@@ -34,6 +34,7 @@ pristine.addValidator(commentInput, validateComment);
 pristine.addValidator(hashtagInput, validateHashtag, 'Хеш-тег написан неверно');
 
 function onUploadFileChange() {
+  submitButton.disabled = false;
   fileInput.classList.remove('hidden');
   document.addEventListener('keydown', onFormDecorationEscKeydown);
   document.querySelector('body').classList.add('modal-open');
@@ -74,8 +75,11 @@ function validateHashtag(text) {
     return true;
   }
   const regForHashtag = /^#[a-zа-яё0-9]{1,19}$/i;
-  const hashtags = text.split(' ');
+  const hashtags = text.split(' ').filter((hashtag) => hashtag !== '');
   if (hashtags.length !== new Set(hashtags).size) {
+    return false;
+  }
+  if (hashtags.length > MAXIMUM_HASHTAG_NUMBER) {
     return false;
   }
   for (const hashtag of hashtags) {
@@ -84,10 +88,6 @@ function validateHashtag(text) {
       return false;
     }
   }
-  if (hashtags.length > MAXIMUM_HASHTAG_NUMBER) {
-    return false;
-  }
-
   return true;
 }
 
@@ -104,17 +104,18 @@ const setUserFormSubmit = (onSuccess, onError) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     if (pristine.validate()) {
-      sendData(onSuccess, onError, new FormData(evt.target)
-      );
+      submitButton.disabled = true;
+      sendData(onSuccess, onError, new FormData(evt.target));
     }
   });
 };
 
 setUserFormSubmit(getSuccessMessage, getErrorMessage);
 
+
 function getErrorMessage() {
   document.body.append(errorField);
-  document.addEventListener('keydown', onErrorFieldClick);
+  document.addEventListener('keydown', onErrorFieldKeydownEsc);
   errorButton.addEventListener('click', onErrorFieldClick);
   errorField.addEventListener('click', onErrorFieldClick);
 }
@@ -123,27 +124,52 @@ function getSuccessMessage() {
   document.body.append(successField);
   successButton.addEventListener('click', onSuccessFieldClick);
   successField.addEventListener('click', onSuccessFieldClick);
-  document.addEventListener('keydown', onSuccessFieldClick);
+  document.addEventListener('keydown', onSuccessFieldKeydownEsc);
 }
 
 function onSuccessFieldClick(evt) {
-  if (evt.target.className !== 'success__inner' || isEscapeKey(evt)) {
+  if (evt.target.className !== 'success__inner'
+    && evt.target.className !== 'success__title') {
+    evt.preventDefault();
+    document.body.removeChild(successField);
+    closeFormDecoration();
+    successButton.removeEventListener('click', onSuccessFieldClick);
+    successField.removeEventListener('click', onSuccessFieldClick);
+    document.removeEventListener('keydown', onSuccessFieldKeydownEsc);
+  }
+}
+
+
+function onErrorFieldClick(evt) {
+  if (evt.target.className !== 'error__inner'
+    && evt.target.className !== 'error__title') {
+    evt.preventDefault();
+    document.body.removeChild(errorField);
+    document.removeEventListener('keydown', onErrorFieldKeydownEsc);
+    errorButton.removeEventListener('click', onErrorFieldClick);
+    errorField.removeEventListener('click', onErrorFieldClick);
+    submitButton.disabled = false;
+  }
+}
+
+function onErrorFieldKeydownEsc(evt) {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    document.body.removeChild(errorField);
+    document.removeEventListener('keydown', onErrorFieldClick);
+    errorButton.removeEventListener('click', onErrorFieldClick);
+    errorField.removeEventListener('click', onErrorFieldClick);
+    submitButton.disabled = false;
+  }
+}
+
+function onSuccessFieldKeydownEsc(evt) {
+  if (isEscapeKey(evt)) {
     evt.preventDefault();
     document.body.removeChild(successField);
     closeFormDecoration();
     successButton.removeEventListener('click', onSuccessFieldClick);
     successField.removeEventListener('click', onSuccessFieldClick);
     document.removeEventListener('keydown', onSuccessFieldClick);
-  }
-}
-
-
-function onErrorFieldClick(evt) {
-  if (evt.target.className !== 'error__inner' || isEscapeKey(evt)) {
-    evt.preventDefault();
-    document.body.removeChild(errorField);
-    document.removeEventListener('keydown', onErrorFieldClick);
-    errorButton.removeEventListener('click', onErrorFieldClick);
-    errorField.removeEventListener('click', onErrorFieldClick);
   }
 }

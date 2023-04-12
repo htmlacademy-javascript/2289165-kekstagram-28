@@ -1,7 +1,7 @@
 import { container } from './create-pictures.js';
 import { MAXIMUM_COMMENTS_NUMBER } from './data.js';
-import { isEscapeKey} from './utils.js';
-import { similarPhotoSpecifications } from './create-pictures.js';
+import { isEscapeKey, getPhotoSpecificationsFromServer } from './utils.js';
+import {createLoader} from './load.js';
 
 
 const fullSize = document.querySelector('.big-picture');
@@ -18,7 +18,8 @@ const loadMoreCommentsButton = fullSize.querySelector('.comments-loader');
 
 container.addEventListener('click', onContainerClick);
 closeButton.addEventListener('click', onCloseButtonClick);
-loadMoreCommentsButton.addEventListener('click', () => onLoadMoreCommentsButtonClick(getDataForPicture(loadMoreCommentsButton.id).comments));
+loadMoreCommentsButton.addEventListener('click',
+  () => onLoadMoreCommentsButtonClick(getDataForPicture(loadMoreCommentsButton.id).comments));
 
 function onContainerClick(evt) {
   if (evt.target.className === 'picture__img') {
@@ -42,7 +43,7 @@ function onLoadMoreCommentsButtonClick(comments) {
   if (commentsList.children.length === comments.length) {
     loadMoreCommentsButton.classList.add('hidden');
   }
-  commentsCountBlock.innerHTML = `${commentsList.childElementCount} из ${comments.length} комментариев`;
+  commentsCountBlock.textContent = `${commentsList.childElementCount} из ${comments.length} комментариев`;
 }
 
 function enlargeMiniature({ id, url, likes, comments, description }) {
@@ -67,12 +68,12 @@ function enlargeMiniature({ id, url, likes, comments, description }) {
   } else {
     loadMoreCommentsButton.classList.remove('hidden');
   }
-  commentsCountBlock.innerHTML = `${commentsList.childElementCount} из ${comments.length} комментариев`;
+  commentsCountBlock.textContent = `${commentsList.childElementCount} из ${comments.length} комментариев`;
   commentsCountBlock.classList.remove('hidden');
 }
-
+// createLoader
 function getDataForPicture(id) {
-  return similarPhotoSpecifications.find((photoSpecification) => Number(id) === photoSpecification.id);
+  return createLoader(getPhotoSpecificationsFromServer).find((photoSpecification) => Number(id) === photoSpecification.id);
 }
 
 function createOneComment(comments, index) {

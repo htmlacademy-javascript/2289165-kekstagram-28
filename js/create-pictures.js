@@ -1,8 +1,7 @@
 const container = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-let similarPhotoSpecifications = [];
 
-function createMiniature({ id, url, likes, comments, description }) {
+function createMiniature({ id, url, likes = 0, comments = 0, description }) {
   const newElement = pictureTemplate.cloneNode(true);
   newElement.querySelector('.picture__img').src = url;
   newElement.querySelector('.picture__likes').textContent = likes;
@@ -17,12 +16,10 @@ function createMiniature({ id, url, likes, comments, description }) {
  */
 function createModels(data) {
   const fragment = document.createDocumentFragment();
-  data.forEach((value) => {
-    fragment.appendChild(createMiniature(value));
-  });
+  data.forEach((value) => fragment.appendChild(createMiniature(value)));
   container.appendChild(fragment);
-  similarPhotoSpecifications = data;
   document.querySelector('.img-filters').classList.remove('img-filters--inactive');
+
 }
 
-export { createModels, createMiniature, container, similarPhotoSpecifications };
+export { createModels, createMiniature, container };
