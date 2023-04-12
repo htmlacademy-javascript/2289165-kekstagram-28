@@ -12,10 +12,11 @@ defaultFilterButton.addEventListener('click', onDefaultFilterButtonClick);
 randomTenFilterButton.addEventListener('click', onRandomTenFilterButtonClick);
 discussedFilterButton.addEventListener('click', onDiscussedFilterButtonClick);
 
+const debouncedFilteredPictures = debounce(createFilteredModels);
+
 function sortRand() {
   return Math.random() - 0.5;
 }
-
 
 function sortAscending(elementOne, elementTwo) {
   if (elementOne.comments.length < elementTwo.comments.length) {
@@ -26,8 +27,6 @@ function sortAscending(elementOne, elementTwo) {
   }
   return 0;
 }
-
-const debouncedFilteredPictures = debounce(createFilteredModels);
 
 function makeOneButtonActive(buttonName) {
   filterForm.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
