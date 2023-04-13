@@ -27,59 +27,27 @@ const pristine = new Pristine(fileInput, {
   errorTextClass: 'img-upload__field-wrapper__error-text',
 });
 
-pictureInput.addEventListener('change', onUploadFileChange);
-uploadCloseButton.addEventListener('click', onUpLoadCloseButton);
-
-pristine.addValidator(commentInput, validateComment);
-pristine.addValidator(hashtagInput, validateHashtag, 'Хеш-тег написан неверно');
-
-function onUploadFileChange() {
-  submitButton.disabled = false;
-  fileInput.classList.remove('hidden');
-  document.addEventListener('keydown', onFormDecorationEscKeydown);
-  document.querySelector('body').classList.add('modal-open');
-}
-
-function onUpLoadCloseButton() {
-  closeFormDecoration();
-}
-
-function onFormDecorationEscKeydown(evt) {
-  const isTextFieldOnFocus = document.activeElement === commentInput || document.activeElement === hashtagInput;
-  if (isEscapeKey(evt) && !isTextFieldOnFocus) {
-    evt.preventDefault();
-    closeFormDecoration();
-  }
-}
-
-function closeFormDecoration() {
+const closeFileInput = () => {
   fileInput.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onFormDecorationEscKeydown);
+  document.removeEventListener('keydown', onFileInputEscKeydown);
   resetScale();
   resetEffects();
   pictureInput.value = '';
   hashtagInput.value = '';
   commentInput.value = '';
-}
+};
 
-pictureInput.addEventListener('change', () => {
-  const file = pictureInput.files[0];
-  const fileName = file.name.toLowerCase();
-  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
-  if (matches) {
-    imagePreview.src = URL.createObjectURL(file);
-  }
-});
+const onUpLoadCloseButton = () => closeFileInput();
 
-function validateComment(text) {
+const validateComment = (text) => {
   if (text.length > MAXIMUM_COMMENT_LENGTH) {
     return false;
   }
   return true;
-}
+};
 
-function validateHashtag(text) {
+const validateHashtag = (text) => {
   if (text === '') {
     return true;
   }
@@ -98,16 +66,7 @@ function validateHashtag(text) {
     }
   }
   return true;
-}
-
-fileInput.addEventListener('input', () => {
-  if (pristine.validate()) {
-    submitButton.disabled = false;
-    return;
-  }
-  submitButton.disabled = true;
-
-});
+};
 
 const setUserFormSubmit = (onSuccess, onError) => {
   form.addEventListener('submit', (evt) => {
@@ -115,39 +74,12 @@ const setUserFormSubmit = (onSuccess, onError) => {
     if (pristine.validate()) {
       submitButton.disabled = true;
       sendData(onSuccess, onError, new FormData(evt.target));
+      document.removeEventListener('keydown', onFileInputEscKeydown);
     }
   });
 };
 
-setUserFormSubmit(getSuccessMessage, getErrorMessage);
-
-function getErrorMessage() {
-  document.body.append(errorField);
-  document.addEventListener('keydown', onErrorFieldKeydownEsc);
-  errorButton.addEventListener('click', onErrorFieldClick);
-  errorField.addEventListener('click', onErrorFieldClick);
-}
-
-function getSuccessMessage() {
-  document.body.append(successField);
-  successButton.addEventListener('click', onSuccessFieldClick);
-  successField.addEventListener('click', onSuccessFieldClick);
-  document.addEventListener('keydown', onSuccessFieldKeydownEsc);
-}
-
-function onSuccessFieldClick(evt) {
-  if (evt.target.className !== 'success__inner'
-    && evt.target.className !== 'success__title') {
-    evt.preventDefault();
-    document.body.removeChild(successField);
-    closeFormDecoration();
-    successButton.removeEventListener('click', onSuccessFieldClick);
-    successField.removeEventListener('click', onSuccessFieldClick);
-    document.removeEventListener('keydown', onSuccessFieldKeydownEsc);
-  }
-}
-
-function onErrorFieldClick(evt) {
+const onErrorFieldClick = (evt) => {
   if (evt.target.className !== 'error__inner'
     && evt.target.className !== 'error__title') {
     evt.preventDefault();
@@ -155,7 +87,70 @@ function onErrorFieldClick(evt) {
     document.removeEventListener('keydown', onErrorFieldKeydownEsc);
     errorButton.removeEventListener('click', onErrorFieldClick);
     errorField.removeEventListener('click', onErrorFieldClick);
+    document.addEventListener('keydown', onFileInputEscKeydown);
     submitButton.disabled = false;
+  }
+};
+
+const getErrorMessage = () => {
+  document.body.append(errorField);
+  document.addEventListener('keydown', onErrorFieldKeydownEsc);
+  errorButton.addEventListener('click', onErrorFieldClick);
+  errorField.addEventListener('click', onErrorFieldClick);
+};
+
+const onSuccessFieldClick = (evt) => {
+  if (evt.target.className !== 'success__inner'
+    && evt.target.className !== 'success__title') {
+    evt.preventDefault();
+    document.body.removeChild(successField);
+    closeFileInput();
+    successButton.removeEventListener('click', onSuccessFieldClick);
+    successField.removeEventListener('click', onSuccessFieldClick);
+    document.removeEventListener('keydown', onSuccessFieldKeydownEsc);
+  }
+};
+
+const getSuccessMessage = () => {
+  document.body.append(successField);
+  successButton.addEventListener('click', onSuccessFieldClick);
+  successField.addEventListener('click', onSuccessFieldClick);
+  document.addEventListener('keydown', onSuccessFieldKeydownEsc);
+};
+
+pictureInput.addEventListener('change', () => {
+  submitButton.disabled = false;
+  fileInput.classList.remove('hidden');
+  document.addEventListener('keydown', onFileInputEscKeydown);
+  document.querySelector('body').classList.add('modal-open');
+  const file = pictureInput.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    imagePreview.src = URL.createObjectURL(file);
+  }
+});
+
+uploadCloseButton.addEventListener('click', onUpLoadCloseButton);
+
+pristine.addValidator(commentInput, validateComment);
+pristine.addValidator(hashtagInput, validateHashtag, 'Хеш-тег написан неверно');
+
+fileInput.addEventListener('input', () => {
+  if (pristine.validate()) {
+    submitButton.disabled = false;
+    return;
+  }
+  submitButton.disabled = true;
+});
+
+setUserFormSubmit(getSuccessMessage, getErrorMessage);
+
+function onFileInputEscKeydown(evt) {
+  const isTextFieldOnFocus = document.activeElement === commentInput || document.activeElement === hashtagInput;
+  if (isEscapeKey(evt) && !isTextFieldOnFocus) {
+    evt.preventDefault();
+    closeFileInput();
   }
 }
 
@@ -163,9 +158,10 @@ function onErrorFieldKeydownEsc(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     document.body.removeChild(errorField);
-    document.removeEventListener('keydown', onErrorFieldClick);
+    document.removeEventListener('keydown', onErrorFieldKeydownEsc);
     errorButton.removeEventListener('click', onErrorFieldClick);
     errorField.removeEventListener('click', onErrorFieldClick);
+    document.addEventListener('keydown', onFileInputEscKeydown);
     submitButton.disabled = false;
   }
 }
@@ -174,9 +170,9 @@ function onSuccessFieldKeydownEsc(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     document.body.removeChild(successField);
-    closeFormDecoration();
+    closeFileInput();
     successButton.removeEventListener('click', onSuccessFieldClick);
     successField.removeEventListener('click', onSuccessFieldClick);
-    document.removeEventListener('keydown', onSuccessFieldClick);
+    document.removeEventListener('keydown', onSuccessFieldKeydownEsc);
   }
 }

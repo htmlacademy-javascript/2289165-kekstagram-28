@@ -1,4 +1,4 @@
-import {ALERT_SHOW_TIME} from './data.js';
+import { ALERT_SHOW_TIME } from './data.js';
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
@@ -23,16 +23,14 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-function debounce (callback, timeoutDelay = 500) {
+const debounce = (callback, timeoutDelay = 500) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
-}
+};
 
-function getPhotoSpecificationsFromServer(data) {
-  return data;
-}
+const getPhotoSpecificationsFromServer = (data) => data;
 
-export {isEscapeKey, showAlert, debounce, getPhotoSpecificationsFromServer};
+export { isEscapeKey, showAlert, debounce, getPhotoSpecificationsFromServer };
