@@ -23,7 +23,7 @@ const getSingleton = () => {
 
 const createLoader = getSingleton();
 
-const sendData = (onSuccess, onError, body) =>
+const sendData = (onSuccess, onError, body) => {
   fetch(
     'https://28.javascript.pages.academy/kekstagram',
     {
@@ -39,5 +39,6 @@ const sendData = (onSuccess, onError, body) =>
       onError();
     })
     .catch(() => onError());
+};
 
 export { sendData, createLoader };
